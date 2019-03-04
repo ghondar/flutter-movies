@@ -80,6 +80,12 @@ class _MovieDetailState extends State<MovieDetail> {
                 pinned: true,
                 elevation: 0.0,
                 flexibleSpace: FlexibleSpaceBar(
+                  centerTitle: true,
+                  title: Text(title,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16.0,
+                      )),
                   background: Image.network(
                     "https://image.tmdb.org/t/p/w500$posterUrl",
                     fit: BoxFit.cover,
@@ -95,15 +101,6 @@ class _MovieDetailState extends State<MovieDetail> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Container(margin: EdgeInsets.only(top: 5.0)),
-                    Text(
-                      title,
-                      style: TextStyle(
-                        fontSize: 25.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Container(margin: EdgeInsets.only(top: 8.0, bottom: 8.0)),
                     Row(
                       children: <Widget>[
                         Icon(
