@@ -50,13 +50,16 @@ class MovieListState extends State<MovieList> {
       gridDelegate:
           SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
       itemBuilder: (BuildContext context, int index) {
-        return GridTile(
-            child: InkResponse(
-                enableFeedback: true,
-                child: Image.network(
-                    "https://image.tmdb.org/t/p/w185${snapshot.data.results[index].poster_path}",
-                    fit: BoxFit.cover),
-                onTap: () => openDetailPage(snapshot.data, index)));
+        return Padding(
+          padding: EdgeInsets.all(5.0),
+          child: GridTile(
+              child: InkResponse(
+                  enableFeedback: true,
+                  child: Image.network(
+                      "https://image.tmdb.org/t/p/w185${snapshot.data.results[index].poster_path}",
+                      fit: BoxFit.cover),
+                  onTap: () => openDetailPage(snapshot.data, index))),
+        );
       },
     );
   }
