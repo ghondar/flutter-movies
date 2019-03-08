@@ -15,7 +15,7 @@ class MovieList extends StatefulWidget {
 class MovieListState extends State<MovieList> {
   void initState() {
     super.initState();
-    bloc.fetchAllMovies();
+    bloc.fetchAllMovies('now_playing');
   }
 
   @override
@@ -26,21 +26,55 @@ class MovieListState extends State<MovieList> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Popular Movies'),
-      ),
-      body: StreamBuilder(
-        stream: bloc.allMovies,
-        builder: (context, AsyncSnapshot<ItemModel> snapshot) {
-          if (snapshot.hasData) {
-            return buildList(snapshot);
-          } else if (snapshot.hasError) {
-            return Text(snapshot.error.toString());
-          }
-          return Center(child: CircularProgressIndicator());
-        },
-      ),
+    return StreamBuilder(
+      stream: bloc.type,
+      builder: (context, AsyncSnapshot<String> typeSnapshot) {
+        return Scaffold(
+          appBar: AppBar(
+            title: Text('Popular Movies'),
+          ),
+          body: StreamBuilder(
+            stream: bloc.allMovies,
+            builder: (context, AsyncSnapshot<Future<ItemModel>> snapshot) {
+              return FutureBuilder(
+                  future: snapshot.data,
+                  builder: (context, AsyncSnapshot<ItemModel> movieSnapShot) {
+                    if (movieSnapShot.hasData) {
+                      return buildList(movieSnapShot);
+                    } else if (movieSnapShot.hasError) {
+                      return Text(movieSnapShot.error.toString());
+                    }
+                    return Center(child: CircularProgressIndicator());
+                  });
+            },
+          ),
+          drawer: Drawer(
+            child: ListView(
+              children: <Widget>[
+                ListTile(
+                  title: Text("Ultimos"),
+                  selected: !typeSnapshot.hasData ||
+                      typeSnapshot.data == 'now_playing',
+                  trailing: Icon(Icons.arrow_forward),
+                  onTap: () => onChangeTypeMovie('now_playing'),
+                ),
+                ListTile(
+                  title: Text("Populares"),
+                  trailing: Icon(Icons.arrow_forward),
+                  selected: typeSnapshot.data == 'popular',
+                  onTap: () => onChangeTypeMovie('popular'),
+                ),
+                ListTile(
+                  title: Text("Mas Votados"),
+                  trailing: Icon(Icons.arrow_forward),
+                  selected: typeSnapshot.data == 'top_rated',
+                  onTap: () => onChangeTypeMovie('top_rated'),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -62,6 +96,11 @@ class MovieListState extends State<MovieList> {
         );
       },
     );
+  }
+
+  onChangeTypeMovie(String type) {
+    Navigator.of(context).pop();
+    bloc.fetchAllMovies(type);
   }
 
   openDetailPage(ItemModel data, int index) {

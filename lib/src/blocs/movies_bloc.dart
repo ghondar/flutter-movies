@@ -5,17 +5,31 @@ import '../models/item_model.dart';
 
 class MoviesBloc {
   final _respository = Repository();
-  final _moviesFetcher = PublishSubject<ItemModel>();
+  final _type = PublishSubject<String>();
+  final _movies = BehaviorSubject<Future<ItemModel>>();
 
-  Observable<ItemModel> get allMovies => _moviesFetcher.stream;
+  Function(String) get fetchAllMovies => _type.sink.add;
 
-  fetchAllMovies() async {
-    ItemModel itemModel = await _respository.fetchAllMovies();
-    _moviesFetcher.sink.add(itemModel);
+  Observable<Future<ItemModel>> get allMovies => _movies.stream;
+
+  Observable<String> get type => _type.stream;
+
+  MoviesBloc() {
+    _type.stream.transform(_moviesTransformer()).pipe(_movies);
   }
 
-  dispose() {
-    _moviesFetcher.close();
+  dispose() async {
+    _type.close();
+    await _movies.drain();
+    _movies.close();
+  }
+
+  _moviesTransformer() {
+    return ScanStreamTransformer(
+        (Future<ItemModel> movies, String type, int index) {
+      movies = _respository.fetchAllMovies(type);
+      return movies;
+    });
   }
 }
 
