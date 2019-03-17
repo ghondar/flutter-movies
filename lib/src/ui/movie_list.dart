@@ -15,7 +15,8 @@ class MovieList extends StatefulWidget {
 class MovieListState extends State<MovieList> {
   void initState() {
     super.initState();
-    bloc.fetchAllMovies('now_playing');
+    TypeMovie typeMovie = TypeMovie('now_playing', 'Ultimos');
+    bloc.fetchAllMovies(typeMovie);
   }
 
   @override
@@ -28,10 +29,10 @@ class MovieListState extends State<MovieList> {
   Widget build(BuildContext context) {
     return StreamBuilder(
       stream: bloc.type,
-      builder: (context, AsyncSnapshot<String> typeSnapshot) {
+      builder: (context, AsyncSnapshot<TypeMovie> typeSnapshot) {
         return Scaffold(
           appBar: AppBar(
-            title: Text('Popular Movies'),
+            title: Text(typeSnapshot.data.name),
           ),
           body: StreamBuilder(
             stream: bloc.allMovies,
@@ -54,21 +55,21 @@ class MovieListState extends State<MovieList> {
                 ListTile(
                   title: Text("Ultimos"),
                   selected: !typeSnapshot.hasData ||
-                      typeSnapshot.data == 'now_playing',
+                      typeSnapshot.data.type == 'now_playing',
                   trailing: Icon(Icons.arrow_forward),
-                  onTap: () => onChangeTypeMovie('now_playing'),
+                  onTap: () => onChangeTypeMovie('now_playing', 'Ultimos'),
                 ),
                 ListTile(
                   title: Text("Populares"),
                   trailing: Icon(Icons.arrow_forward),
-                  selected: typeSnapshot.data == 'popular',
-                  onTap: () => onChangeTypeMovie('popular'),
+                  selected: typeSnapshot.data.type == 'popular',
+                  onTap: () => onChangeTypeMovie('popular', 'Populares'),
                 ),
                 ListTile(
                   title: Text("Mas Votados"),
                   trailing: Icon(Icons.arrow_forward),
-                  selected: typeSnapshot.data == 'top_rated',
-                  onTap: () => onChangeTypeMovie('top_rated'),
+                  selected: typeSnapshot.data.type == 'top_rated',
+                  onTap: () => onChangeTypeMovie('top_rated', 'Mas Votados'),
                 ),
               ],
             ),
@@ -98,9 +99,10 @@ class MovieListState extends State<MovieList> {
     );
   }
 
-  onChangeTypeMovie(String type) {
+  onChangeTypeMovie(String type, String name) {
     Navigator.of(context).pop();
-    bloc.fetchAllMovies(type);
+    TypeMovie typeMovie = TypeMovie(type, name);
+    bloc.fetchAllMovies(typeMovie);
   }
 
   openDetailPage(ItemModel data, int index) {

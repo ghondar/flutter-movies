@@ -3,16 +3,23 @@ import '../resources/repository.dart';
 
 import '../models/item_model.dart';
 
+class TypeMovie {
+  String type;
+  String name;
+
+  TypeMovie(this.type, this.name);
+}
+
 class MoviesBloc {
   final _respository = Repository();
-  final _type = PublishSubject<String>();
+  final _type = PublishSubject<TypeMovie>();
   final _movies = BehaviorSubject<Future<ItemModel>>();
 
-  Function(String) get fetchAllMovies => _type.sink.add;
+  Function(TypeMovie) get fetchAllMovies => _type.sink.add;
 
   Observable<Future<ItemModel>> get allMovies => _movies.stream;
 
-  Observable<String> get type => _type.stream;
+  Observable<TypeMovie> get type => _type.stream;
 
   MoviesBloc() {
     _type.stream.transform(_moviesTransformer()).pipe(_movies);
@@ -26,8 +33,8 @@ class MoviesBloc {
 
   _moviesTransformer() {
     return ScanStreamTransformer(
-        (Future<ItemModel> movies, String type, int index) {
-      movies = _respository.fetchAllMovies(type);
+        (Future<ItemModel> movies, TypeMovie typeMovie, int index) {
+      movies = _respository.fetchAllMovies(typeMovie.type);
       return movies;
     });
   }
