@@ -30,9 +30,11 @@ class MovieListState extends State<MovieList> {
     return StreamBuilder(
       stream: bloc.type,
       builder: (context, AsyncSnapshot<TypeMovie> typeSnapshot) {
+        print(typeSnapshot);
         return Scaffold(
           appBar: AppBar(
-            title: Text(typeSnapshot.data.name),
+            title:
+                Text(typeSnapshot.hasData ? typeSnapshot.data.name : 'Title'),
           ),
           body: StreamBuilder(
             stream: bloc.allMovies,
@@ -62,13 +64,15 @@ class MovieListState extends State<MovieList> {
                 ListTile(
                   title: Text("Populares"),
                   trailing: Icon(Icons.arrow_forward),
-                  selected: typeSnapshot.data.type == 'popular',
+                  selected: !typeSnapshot.hasData ||
+                      typeSnapshot.data.type == 'popular',
                   onTap: () => onChangeTypeMovie('popular', 'Populares'),
                 ),
                 ListTile(
                   title: Text("Mas Votados"),
                   trailing: Icon(Icons.arrow_forward),
-                  selected: typeSnapshot.data.type == 'top_rated',
+                  selected: !typeSnapshot.hasData ||
+                      typeSnapshot.data.type == 'top_rated',
                   onTap: () => onChangeTypeMovie('top_rated', 'Mas Votados'),
                 ),
               ],

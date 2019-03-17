@@ -12,7 +12,7 @@ class TypeMovie {
 
 class MoviesBloc {
   final _respository = Repository();
-  final _type = PublishSubject<TypeMovie>();
+  final _type = BehaviorSubject<TypeMovie>();
   final _movies = BehaviorSubject<Future<ItemModel>>();
 
   Function(TypeMovie) get fetchAllMovies => _type.sink.add;
