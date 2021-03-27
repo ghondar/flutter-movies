@@ -9,9 +9,9 @@ class MovieDetail extends StatefulWidget {
   final posterUrl;
   final description;
   final releaseDate;
-  final String title;
-  final String voteAverage;
-  final int movieId;
+  final String? title;
+  final String? voteAverage;
+  final int? movieId;
 
   MovieDetail({
     this.title,
@@ -37,11 +37,11 @@ class _MovieDetailState extends State<MovieDetail> {
   final posterUrl;
   final description;
   final releaseDate;
-  final String title;
-  final String voteAverage;
-  final int movieId;
+  final String? title;
+  final String? voteAverage;
+  final int? movieId;
 
-  MovieDetailBloc bloc;
+  late MovieDetailBloc bloc;
 
   _MovieDetailState({
     this.title,
@@ -55,7 +55,7 @@ class _MovieDetailState extends State<MovieDetail> {
   @override
   void didChangeDependencies() {
     bloc = MovieDetailBlocProvider.of(context);
-    bloc.fetchTrailersById(movieId);
+    bloc.fetchTrailersById(movieId!);
     super.didChangeDependencies();
   }
 
@@ -81,7 +81,7 @@ class _MovieDetailState extends State<MovieDetail> {
                 elevation: 0.0,
                 flexibleSpace: FlexibleSpaceBar(
                   centerTitle: true,
-                  title: Text(title,
+                  title: Text(title!,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16.0,
@@ -109,7 +109,7 @@ class _MovieDetailState extends State<MovieDetail> {
                         ),
                         Container(
                             margin: EdgeInsets.only(top: 1.0, right: 1.0)),
-                        Text(voteAverage, style: TextStyle(fontSize: 10.0)),
+                        Text(voteAverage!, style: TextStyle(fontSize: 10.0)),
                         Container(
                           margin: EdgeInsets.only(left: 10.0, right: 10.0),
                         ),
@@ -135,8 +135,8 @@ class _MovieDetailState extends State<MovieDetail> {
                             builder: (context,
                                 AsyncSnapshot<TrailerModel> itemSnapShot) {
                               if (itemSnapShot.hasData) {
-                                if (itemSnapShot.data.results.length > 0)
-                                  return trailerLayout(itemSnapShot.data);
+                                if (itemSnapShot.data!.results.length > 0)
+                                  return trailerLayout(itemSnapShot.data!);
                                 else
                                   return noTrailer(itemSnapShot.data);
                               } else {
@@ -160,7 +160,7 @@ class _MovieDetailState extends State<MovieDetail> {
     );
   }
 
-  Widget noTrailer(TrailerModel data) {
+  Widget noTrailer(TrailerModel? data) {
     return Center(
         child: Container(
       child: Text("No trailer available"),
@@ -189,18 +189,18 @@ class _MovieDetailState extends State<MovieDetail> {
             decoration: new BoxDecoration(
               image: new DecorationImage(
                 image: NetworkImage(
-                  "http://i3.ytimg.com/vi/${data.results[index].key}/hqdefault.jpg",
+                  "https://cors-anywhere.herokuapp.com/http://i3.ytimg.com/vi/${data.results[index].key}/hqdefault.jpg",
                 ),
                 fit: BoxFit.cover,
               ),
             ),
-            child: FlatButton.icon(
+            child: TextButton.icon(
                 onPressed: () => _launchUrl(data.results[index].key),
                 icon: Icon(Icons.play_circle_filled),
                 label: Text('')),
           ),
           Text(
-            data.results[index].name,
+            data.results[index].name!,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           )

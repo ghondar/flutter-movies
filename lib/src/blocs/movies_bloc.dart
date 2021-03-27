@@ -17,9 +17,9 @@ class MoviesBloc {
 
   Function(TypeMovie) get fetchAllMovies => _type.sink.add;
 
-  Observable<Future<ItemModel>> get allMovies => _movies.stream;
+  ValueStream<Future<ItemModel>> get allMovies => _movies.stream;
 
-  Observable<TypeMovie> get type => _type.stream;
+  ValueStream<TypeMovie> get type => _type.stream;
 
   MoviesBloc() {
     _type.stream.transform(_moviesTransformer()).pipe(_movies);
@@ -31,13 +31,13 @@ class MoviesBloc {
     _movies.close();
   }
 
-  _moviesTransformer() {
+  ScanStreamTransformer<TypeMovie, Future<ItemModel>> _moviesTransformer() {
     return ScanStreamTransformer(
-        (Future<ItemModel> movies, TypeMovie typeMovie, int index) {
+        (Future<ItemModel>? movies, TypeMovie typeMovie, int index) {
       movies = _respository.fetchAllMovies(typeMovie.type);
       return movies;
     });
   }
 }
 
-final bloc = MoviesBloc();
+final MoviesBloc bloc = new MoviesBloc();

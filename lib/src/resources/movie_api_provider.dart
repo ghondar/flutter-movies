@@ -11,7 +11,8 @@ class MovieApiProvider {
   final _baseUrl = "http://api.themoviedb.org/3/movie";
 
   Future<ItemModel> fetchMovieList(String type) async {
-    final response = await client.get("$_baseUrl/$type?api_key=$_apiKey");
+    Uri uri = Uri.parse("$_baseUrl/$type?api_key=$_apiKey");
+    final response = await client.get(uri);
     if (response.statusCode == 200) {
       return ItemModel.fromJson(json.decode(response.body));
     } else {
@@ -20,8 +21,9 @@ class MovieApiProvider {
   }
 
   Future<TrailerModel> fetchTrailer(int movieId) async {
+    Uri uri = Uri.parse("$_baseUrl/$movieId/videos?api_key=$_apiKey");
     final response =
-        await client.get("$_baseUrl/$movieId/videos?api_key=$_apiKey");
+        await client.get(uri);
 
     if (response.statusCode == 200) {
       return TrailerModel.fromJson(json.decode(response.body));

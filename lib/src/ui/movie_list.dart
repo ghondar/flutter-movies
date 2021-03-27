@@ -34,7 +34,7 @@ class MovieListState extends State<MovieList> {
         return Scaffold(
           appBar: AppBar(
             title:
-                Text(typeSnapshot.hasData ? typeSnapshot.data.name : 'Title'),
+                Text(typeSnapshot.hasData ? typeSnapshot.data!.name : 'Title'),
           ),
           body: StreamBuilder(
             stream: bloc.allMovies,
@@ -57,7 +57,7 @@ class MovieListState extends State<MovieList> {
                 ListTile(
                   title: Text("Ultimos"),
                   selected: !typeSnapshot.hasData ||
-                      typeSnapshot.data.type == 'now_playing',
+                      typeSnapshot.data!.type == 'now_playing',
                   trailing: Icon(Icons.arrow_forward),
                   onTap: () => onChangeTypeMovie('now_playing', 'Ultimos'),
                 ),
@@ -65,14 +65,14 @@ class MovieListState extends State<MovieList> {
                   title: Text("Populares"),
                   trailing: Icon(Icons.arrow_forward),
                   selected: !typeSnapshot.hasData ||
-                      typeSnapshot.data.type == 'popular',
+                      typeSnapshot.data!.type == 'popular',
                   onTap: () => onChangeTypeMovie('popular', 'Populares'),
                 ),
                 ListTile(
                   title: Text("Mas Votados"),
                   trailing: Icon(Icons.arrow_forward),
                   selected: !typeSnapshot.hasData ||
-                      typeSnapshot.data.type == 'top_rated',
+                      typeSnapshot.data!.type == 'top_rated',
                   onTap: () => onChangeTypeMovie('top_rated', 'Mas Votados'),
                 ),
               ],
@@ -85,7 +85,7 @@ class MovieListState extends State<MovieList> {
 
   Widget buildList(AsyncSnapshot<ItemModel> snapshot) {
     return GridView.builder(
-      itemCount: snapshot.data.results.length,
+      itemCount: snapshot.data!.results.length,
       gridDelegate:
           SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
       itemBuilder: (BuildContext context, int index) {
@@ -95,7 +95,7 @@ class MovieListState extends State<MovieList> {
               child: InkResponse(
                   enableFeedback: true,
                   child: Image.network(
-                      "https://image.tmdb.org/t/p/w185${snapshot.data.results[index].poster_path}",
+                      "https://image.tmdb.org/t/p/w185${snapshot.data!.results[index].poster_path}",
                       fit: BoxFit.cover),
                   onTap: () => openDetailPage(snapshot.data, index))),
         );
@@ -109,11 +109,11 @@ class MovieListState extends State<MovieList> {
     bloc.fetchAllMovies(typeMovie);
   }
 
-  openDetailPage(ItemModel data, int index) {
+  openDetailPage(ItemModel? data, int index) {
     Navigator.push(context, MaterialPageRoute(builder: (context) {
       return MovieDetailBlocProvider(
           child: MovieDetail(
-        title: data.results[index].title,
+        title: data!.results[index].title,
         posterUrl: data.results[index].backdrop_path,
         description: data.results[index].overview,
         releaseDate: data.results[index].release_date,

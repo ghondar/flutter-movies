@@ -1,12 +1,12 @@
 class _Result {
-  String _id;
-  String _iso_639_1;
-  String _iso_3166_1;
-  String _key;
-  String _name;
-  String _site;
-  int _size;
-  String _type;
+  String? _id;
+  String? _iso_639_1;
+  String? _iso_3166_1;
+  String? _key;
+  String? _name;
+  String? _site;
+  int? _size;
+  String? _type;
 
   _Result(result) {
     _id = result['id'];
@@ -19,25 +19,25 @@ class _Result {
     _type = result['type'];
   }
 
-  String get id => _id;
+  String? get id => _id;
 
-  String get iso_639_1 => _iso_639_1;
+  String? get iso_639_1 => _iso_639_1;
 
-  String get iso_3166_1 => _iso_3166_1;
+  String? get iso_3166_1 => _iso_3166_1;
 
-  String get key => _key;
+  String? get key => _key;
 
-  String get name => _name;
+  String? get name => _name;
 
-  String get site => _site;
+  String? get site => _site;
 
-  int get size => _size;
+  int? get size => _size;
 
-  String get type => _type;
+  String? get type => _type;
 }
 
 class TrailerModel {
-  int _id;
+  int? _id;
   List<_Result> _results = [];
 
   TrailerModel.fromJson(Map<String, dynamic> parsedJson) {
@@ -53,5 +53,5 @@ class TrailerModel {
 
   List<_Result> get results => _results;
 
-  int get id => _id;
+  int? get id => _id;
 }

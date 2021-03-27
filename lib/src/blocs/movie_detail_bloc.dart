@@ -11,7 +11,7 @@ class MovieDetailBloc {
 
   Function(int) get fetchTrailersById => _movieId.sink.add;
 
-  Observable<Future<TrailerModel>> get movieTrailers => _trailers.stream;
+  ValueStream<Future<TrailerModel>> get movieTrailers => _trailers.stream;
 
   MovieDetailBloc() {
     _movieId.stream.transform(_itemTransformer()).pipe(_trailers);
@@ -23,9 +23,9 @@ class MovieDetailBloc {
     _trailers.close();
   }
 
-  _itemTransformer() {
-    return ScanStreamTransformer(
-        (Future<TrailerModel> trailer, int id, int index) {
+  ScanStreamTransformer<int, Future<TrailerModel>> _itemTransformer() {
+
+    return ScanStreamTransformer((Future<TrailerModel>? trailer, int id, int index) {
       trailer = _repository.fetchTrailers(id);
       return trailer;
     });
